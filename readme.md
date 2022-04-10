@@ -2,6 +2,14 @@
 This is a scraper that compares item prices from steam and third party markets
 
 ## Usage:
+
+### Step one
+install prerequisite packages from requirements.txt
+```
+"""in console"""
+pip install -r requirements.txt
+```
+
 ### First way
 modify and run Scraper.py main() function
 
