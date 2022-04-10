@@ -1,5 +1,5 @@
 # Steam Market Flipper
-this is a scraper that compares item prices from steam and third party markets
+This is a scraper that compares item prices from steam and third party markets
 
 ## Usage:
 ### First way
@@ -7,6 +7,8 @@ modify and run Scraper.py main() function
 
 ### Second way
 ```
+from Scraper import SteamMarket, PriceHistory, CSDeals, Scraper, SteamPrice
+
 steam = SteamMarket()
 history = PriceHistory(
     price_history_file_path="steam_prices.pkl", up_to_date_days=3
