@@ -246,7 +246,14 @@ class CSDeals(ThirdPartyMarket):
     scraper class for https://cs.deals
     """
 
-    def __init__(self):
+    def __init__(self, min_price: float = 2.0, max_price: float = 100.0):
+        """
+        args:
+            min_price : float = 2.0
+                minimum price for item to show
+            max_price : float = 100.0
+                maximum price for item to show
+        """
         self.url = "https://cs.deals/ajax/marketplace-search"
         self.headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 OPR/85.0.4341.65",
@@ -255,6 +262,8 @@ class CSDeals(ThirdPartyMarket):
         }
         self.form_data = {"appid": 252490, "sort": "discount", "sort_desc": 1}
         self.conversion_rate = CurrencyRates().get_rate("USD", "EUR")
+        self.min_price = min_price
+        self.max_price = max_price
 
     def get_page_items(self, page: int) -> Optional[List[SkinportItem]]:
         """
@@ -282,7 +291,8 @@ class CSDeals(ThirdPartyMarket):
                 name = item["c"]
                 price = round(float(item["i"]) * self.conversion_rate, 2)
                 new_item = CSDealsItem(name=name, price=price)
-                items.append(new_item)
+                if price > self.min_price and price < self.max_price:
+                    items.append(new_item)
         except Exception as exc:
             raise exc
 
@@ -536,9 +546,9 @@ def main():
     history = PriceHistory(
         price_history_file_path="steam_prices.pkl", up_to_date_days=3
     )
-    market = CSDeals()  # Choose from [CSDeals(), Skinport()]
+    market = Skinport()  # Choose from [CSDeals(), Skinport()]
     scraper = Scraper(
-        percent_thershold=35,
+        percent_thershold=25,
         steam_market=steam,
         third_party_market=market,
         price_history=history,
