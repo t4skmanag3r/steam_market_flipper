@@ -546,7 +546,7 @@ def main():
     history = PriceHistory(
         price_history_file_path="steam_prices.pkl", up_to_date_days=3
     )
-    market = Skinport()  # Choose from [CSDeals(), Skinport()]
+    market = CSDeals()  # Choose from [CSDeals(), Skinport()]
     scraper = Scraper(
         percent_thershold=25,
         steam_market=steam,
