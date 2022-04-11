@@ -421,7 +421,7 @@ class Alert:
     percentage: float
 
     def __post_init__(self):
-        self.sell_even = round(self.market_item.price * 1.13 * 1.12, 2)
+        self.sell_even = round(self.market_item.price * 1.13 * 1.12 * 1.12, 2)
         self.profit = tax_calculation(self.steam_price.lowest_price)
 
     def __str__(self) -> str:
