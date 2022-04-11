@@ -160,7 +160,7 @@ class SteamMarket:
         uClient = None
         for atempt in range(3):
             try:
-                uClient = urlopen(self.steam_url.format(self._encode_url_string(name)))
+                uClient = urlopen(self.steam_url.format(_encode_url_string(name)))
                 page_html = uClient.read()
                 break
 
@@ -205,7 +205,7 @@ class SteamMarket:
             else 0
         )
         volume = int(json_info["volume"].strip()) if "volume" in json_info else 0
-        steam_url = f"https://steamcommunity.com/market/listings/252490/{self._encode_url_string(name)}"
+        steam_url = f"https://steamcommunity.com/market/listings/252490/{_encode_url_string(name)}"
         return SteamPrice(
             name=name,
             lowest_price=lowest_price,
@@ -215,15 +215,6 @@ class SteamMarket:
             url=steam_url,
         )
 
-    def _encode_url_string(self, string: str) -> str:
-        """
-        function for url encoding
-        """
-        maping = {" ": "%20", "'": "%27", "&": "%26", "é": "%C3%A9"}
-        for k, v in maping.items():
-            string = string.replace(k, v)
-        return string
-
     def _filter_string_price(self, string) -> float:
         """
         function to filter out symbols from price in steam json
@@ -232,6 +223,16 @@ class SteamMarket:
         for char in char_list:
             string = string.replace(char, "")
         return string.strip()
+
+
+def _encode_url_string(string: str) -> str:
+    """
+    function for url encoding
+    """
+    maping = {" ": "%20", "'": "%27", "&": "%26", "é": "%C3%A9"}
+    for k, v in maping.items():
+        string = string.replace(k, v)
+    return string
 
 
 # Third party market scraper classes
@@ -290,7 +291,8 @@ class CSDeals(ThirdPartyMarket):
             for item in data:
                 name = item["c"]
                 price = round(float(item["i"]) * self.conversion_rate, 2)
-                new_item = CSDealsItem(name=name, price=price)
+                url = f"https://cs.deals/market/?name={_encode_url_string(name)}&sort=price"
+                new_item = CSDealsItem(name=name, price=price, url=url)
                 if price > self.min_price and price < self.max_price:
                     items.append(new_item)
         except Exception as exc:
@@ -549,7 +551,7 @@ def main():
     )
     market = CSDeals()  # Choose from [CSDeals(), Skinport()]
     scraper = Scraper(
-        percent_thershold=30,
+        percent_thershold=25,
         steam_market=steam,
         third_party_market=market,
         price_history=history,
