@@ -402,9 +402,10 @@ def tax_calculation(price) -> float:
     tax calculation for transaction
     drop 2% of base price,
     13 % steam market cut
+    12 % price difference in price of cashout items between steam and skinport
     12 % skinport sale cut
     """
-    return round(round(price * 0.98 * 0.87, 2) * 0.88, 2)
+    return round(round(price * 0.98 * 0.87, 2) * 0.88 * 0.88, 2)
 
 
 @dataclass
@@ -548,7 +549,7 @@ def main():
     )
     market = CSDeals()  # Choose from [CSDeals(), Skinport()]
     scraper = Scraper(
-        percent_thershold=25,
+        percent_thershold=30,
         steam_market=steam,
         third_party_market=market,
         price_history=history,
