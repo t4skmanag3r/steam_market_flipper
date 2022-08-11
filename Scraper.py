@@ -325,23 +325,21 @@ class Skinport(ThirdPartyMarket):
                 maximum price for items 10000 = 100.00€
         """
         self.headers = {
-            "accept": "application/json text/plain, */*",
-            "accept-encoding": "utf-8",
+            "accept": "application/json, text/plain, */*",
             "accept-language": "en-US,en;q=0.9",
-            "origin": "https://skinport.com",
-            "referer": "https://skinport.com/market/252490",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 OPR/73.0.3856.415",
+            "referer": "https://skinport.com/rust/market?pricegt=138&pricelt=156900&sort=percent&order=desc",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 OPR/89.0.4447.64",
+            "cookie": "_csrf=",
         }
+
         self.sort_options = ["sale", "popular", "percent", "price", "wear", "date"]
         self.sort_by = sortby
         self.order = order
         self.price_min = price_min
         self.price_max = price_max
 
-        self.url = "https://app.skinport.com/browse/252490?pricegt={}&pricelt={}&sort={}&order={}&skip={}"
+        # self.url = "https://app.skinport.com/browse/252490?pricegt={}&pricelt={}&sort={}&order={}&skip={}" # old
+        self.url = "https://skinport.com/api/browse/252490?pricegt={}&pricelt={}&sort={}&order={}&skip={}"
 
     def get_page_items(self, page) -> Optional[List[SkinportItem]]:
         """
@@ -549,7 +547,7 @@ def main():
     history = PriceHistory(
         price_history_file_path="steam_prices.pkl", up_to_date_days=3
     )
-    market = CSDeals()  # Choose from [CSDeals(), Skinport()]
+    market = Skinport(sortby="percent")  # Choose from [CSDeals(), Skinport()]
     scraper = Scraper(
         percent_thershold=25,
         steam_market=steam,
