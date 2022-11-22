@@ -402,10 +402,10 @@ def tax_calculation(price) -> float:
     tax calculation for transaction
     drop 2% of base price,
     13 % steam market cut
-    12 % price difference in price of cashout items between steam and skinport
+    5 % price difference in price of cashout items between steam and skinport
     12 % skinport sale cut
     """
-    return round(round(price * 0.98 * 0.87, 2) * 0.88 * 0.88, 2)
+    return round(round(price * 0.98 * 0.87, 2) * 0.95 * 0.88, 2)
 
 
 @dataclass
@@ -425,7 +425,7 @@ class Alert:
     def __str__(self) -> str:
         return (
             f'item: ["{self.market_item.name}"],  buy price: {self.market_item.price}€  sell price: {self.steam_price.lowest_price}€  volume: {self.steam_price.volume}\n'
-            + f"profit percent: {self.percentage}% profit: {self.profit}€ sell/even: {self.sell_even}€\n"
+            + f"profit percent: {self.percentage}% profit: {(self.profit - self.market_item.price):.2f}€ sell/even: {self.sell_even}€\n"
             + f"market_link: {self.market_item.url}  steam: {self.steam_price.url}\n"
             + "-" * 150
         )
@@ -547,9 +547,10 @@ def main():
     history = PriceHistory(
         price_history_file_path="steam_prices.pkl", up_to_date_days=3
     )
-    market = Skinport(sortby="percent")  # Choose from [CSDeals(), Skinport()]
+    market = Skinport(sortby="date")  # Choose from [CSDeals(), Skinport()]
+    # market = CSDeals() # Cs deals stopped working because forex_python api is no longer available
     scraper = Scraper(
-        percent_thershold=25,
+        percent_thershold=5,
         steam_market=steam,
         third_party_market=market,
         price_history=history,
